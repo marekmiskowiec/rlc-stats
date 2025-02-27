@@ -1,0 +1,30 @@
+# Ignorowanie plików środowiskowych i konfiguracji
+.env
+credentials.json
+
+# Ignorowanie plików Pythona
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorowanie logów i plików tymczasowych
+logs/
+*.log
+*.out
+*.err
+*.pid
+*.swp
+
+# Ignorowanie wirtualnego środowiska Pythona
+venv/
+env/
+.venv/
+.venv/*
+
+# Ignorowanie plików edytorów
+.vscode/
+.idea/
+*.sublime-workspace
+.DS_Store
+Thumbs.db
