@@ -1,0 +1,21 @@
+name: Scraper & Google Sheets Update
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"  # Uruchamianie co 2 godziny
+  workflow_dispatch:  # Pozwala uruchomić ręcznie
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobierz repozytorium
+        uses: actions/checkout@v3
+
+      - name: Zainstaluj zależności
+        run: pip install requests gspread google-auth oauth2client
+
+      - name: Uruchom scraper
+        env:
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+        run: python rlc-stats.py
