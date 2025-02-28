@@ -1,32 +1,41 @@
 import re
 import requests
 import gspread
-from google.oauth2.service_account import Credentials
+import json
+import os
 from datetime import datetime
+from google.oauth2.service_account import Credentials
+from dotenv import load_dotenv
 
+# 1. Wczytaj zmienne środowiskowe z .env (lokalnie)
+load_dotenv()
 
-# SHEET
-scopes = [
-    "https://www.googleapis.com/auth/spreadsheets"
-]
-credentials = Credentials.from_service_account_file("credentials.json", scopes=scopes)
+# 2. Pobierz klucz z .env lub GitHub Secrets
+google_credentials = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
+
+if not google_credentials:
+    raise ValueError("❌ Nie znaleziono zmiennej GOOGLE_SHEETS_CREDENTIALS!")
+
+# 3. Parsowanie klucza (z string na dict)
+creds_dict = json.loads(google_credentials)
+creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+print(creds_dict["private_key"] )
+
+# 4. Połączenie z Google Sheets
+scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+credentials = Credentials.from_service_account_info(creds_dict, scopes=scopes)
 client = gspread.authorize(credentials)
 
-sheet_id = "1SkXqSNhEj7gm_Ts71-opjp3Gga682un-pvlP4QaJ79I"
-
-workbook = client.open_by_key(sheet_id)
-
+# 5. Połączenie z odpowiednim arkuszem
+SHEET_ID = "1SkXqSNhEj7gm_Ts71-opjp3Gga682un-pvlP4QaJ79I"
+workbook = client.open_by_key(SHEET_ID)
 sheet = workbook.worksheet("RLC-stats")
 
-# Pobierz całą kolumnę A (możesz zmienić na inną kolumnę)
+# 6. Znalezienie pierwszego wolnego wiersza
 column_values = sheet.col_values(1)
-
-# Znajdź pierwszy pusty wiersz (indeks + 1, bo indeksy są od 0)
 first_empty_row = len(column_values) + 1
 
-# print(f"Pierwszy pusty wiersz: {first_empty_row}")
-
-# List of URLs to process
+# 7. Lista URL-i do sprawdzenia
 urls = [
     "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-2006-bmw-m3-jcp11",
     "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-71-lamborghini-hwf11",
@@ -34,60 +43,46 @@ urls = [
     "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-1964-dodge-w200-power-wagon-hwf09"
 ]
 
-# Headers to mimic a real browser request
+# 8. Nagłówek przeglądarki do requests
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
 }
 
+# 9. Przygotowanie danych - aktualna data
 dataa = []
-now = datetime.now()  # Pobranie aktualnej daty i godziny
-formatted_date = now.strftime("%d-%m-%Y %H:%M")  # Formatowanie
-# print(f"Aktualna data i godzina: {formatted_date}")
+now = datetime.now()
+formatted_date = now.strftime("%d-%m-%Y %H:%M")
 dataa.append(formatted_date)
 
+# 10. Funkcja do pobierania danych z pojedynczego URL-a
 def fetch_product_data(url):
     try:
-        # Fetch the page content
         response = requests.get(url, headers=HEADERS)
-        response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
+        response.raise_for_status()
         html = response.text
 
-        # Extract the product title (fallback to regex if needed)
-        title_match = re.search(r'<title>(.*?)</title>', html, re.DOTALL)
-        title = title_match.group(1).strip() if title_match else "Brak tytułu"
-
-        # Find the productVariantId
+        # Szukanie productVariantId
         variant_id_match = re.search(r'SDG\.Data\.productVariantId\s*=\s*(\d+)', html)
 
         if variant_id_match:
             variant_id = variant_id_match.group(1)
 
-            # Find inventory quantity for the identified productVariantId
+            # Szukanie inventoryQty dla tego productVariantId
             inventory_qty_match = re.search(fr'"{variant_id}":\s*(\d+)', html)
             inventory_qty = inventory_qty_match.group(1) if inventory_qty_match else "Brak danych"
 
-            # print(f"✅ URL: {url}")
-            # print(f"📌 Title: {title}")
-            # print(f"🆔 Product Variant ID: {variant_id}")
-            # print(f"📦 Inventory Quantity: {inventory_qty}")
-            # print("-" * 60)
             dataa.append(inventory_qty)
         else:
             print(f"❌ URL: {url} - Nie znaleziono productVariantId")
+            dataa.append("Brak danych")
     except requests.exceptions.RequestException as e:
         print(f"🚨 URL: {url} - Błąd pobierania strony: {e}")
+        dataa.append("Błąd")
 
-# Process each URL
+# 11. Pobierz dane dla wszystkich URL-i
 for url in urls:
     fetch_product_data(url)
 
-# print(dataa)
-sheet.insert_row(dataa, index=first_empty_row)  # Wstawia wiersz na 3. miejscu
-
-
-
-
-
-
-
-
+# 12. Zapis danych do arkusza Google Sheets
+sheet.insert_row(dataa, index=first_empty_row)
+print(f"✅ Dane zapisane do Google Sheets w wierszu {first_empty_row}")

@@ -1,19 +1,19 @@
-name: Scraper & Google Sheets Update
+name: RLC Scraper - Test Co Minutę
 
 on:
   schedule:
-    - cron: "0 */2 * * *"  # Uruchamianie co 2 godziny
-  workflow_dispatch:  # Pozwala uruchomić ręcznie
+    - cron: "*/1 * * * *"  # co 1 minutę
+  workflow_dispatch:      # dodatkowo możliwość ręcznego odpalenia
 
 jobs:
-  run-scraper:
+  scrape:
     runs-on: ubuntu-latest
     steps:
       - name: Pobierz repozytorium
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Zainstaluj zależności
-        run: pip install requests gspread google-auth oauth2client
+      - name: Instalacja zależności
+        run: pip install requests gspread google-auth python-dotenv
 
       - name: Uruchom scraper
         env:
