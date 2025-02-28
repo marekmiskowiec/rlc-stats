@@ -2,7 +2,7 @@ name: RLC Scraper - Test Co Minutę
 
 on:
   schedule:
-    - cron: "*/1 * * * *"  # co 1 minutę
+    - cron: "0 */2 * * *"  # co 2 godziny
   workflow_dispatch:      # dodatkowo możliwość ręcznego odpalenia
 
 jobs:

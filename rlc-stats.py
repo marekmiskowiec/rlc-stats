@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
+import pytz
 
 # 1. Wczytaj zmienne środowiskowe z .env (lokalnie)
 load_dotenv()
@@ -51,8 +52,14 @@ HEADERS = {
 
 # 9. Przygotowanie danych - aktualna data
 dataa = []
-now = datetime.now()
+# Ustawienie strefy czasowej na "Europe/Warsaw"
+warsaw_tz = pytz.timezone("Europe/Warsaw")
+now = datetime.now(warsaw_tz)
+
+# Formatowanie daty
 formatted_date = now.strftime("%d-%m-%Y %H:%M")
+
+print(f"Aktualna data i godzina: {formatted_date}")
 dataa.append(formatted_date)
 
 # 10. Funkcja do pobierania danych z pojedynczego URL-a
