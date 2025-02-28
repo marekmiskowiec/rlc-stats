@@ -94,5 +94,3 @@ for url in urls:
 # 12. Zapis danych do arkusza Google Sheets
 sheet.insert_row(dataa, index=first_empty_row)
 print(f"✅ Dane zapisane do Google Sheets w wierszu {first_empty_row}")
-
-#test
