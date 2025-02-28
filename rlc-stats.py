@@ -23,7 +23,7 @@ print(creds_dict["private_key"] )
 
 # 4. Połączenie z Google Sheets
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-credentials = Credentials.from_service_account_info(creds_dict["private_key"], scopes=scopes)
+credentials = Credentials.from_service_account_info(creds_dict, scopes=scopes)
 client = gspread.authorize(credentials)
 
 # 5. Połączenie z odpowiednim arkuszem
