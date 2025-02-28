@@ -20,6 +20,7 @@ if not google_credentials:
 creds_dict = json.loads(google_credentials)
 creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 print(creds_dict["private_key"] )
+print(creds_dict)
 
 # 4. Połączenie z Google Sheets
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -86,3 +87,5 @@ for url in urls:
 # 12. Zapis danych do arkusza Google Sheets
 sheet.insert_row(dataa, index=first_empty_row)
 print(f"✅ Dane zapisane do Google Sheets w wierszu {first_empty_row}")
+
+#test
