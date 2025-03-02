@@ -26,7 +26,7 @@ class RLCScraper:
         self.client = gspread.authorize(credentials)
 
         # Połączenie z odpowiednim arkuszem
-        self.SHEET_ID = "1SkXqSNhEj7gm_Ts71-opjp3Gga682un-pvlP4QaJ79I"
+        self.SHEET_ID = "1IhMh5_vHcgXMBhrGIi63xuY61PLZIKTpjwMdQTQ63V8"
         self.workbook = self.client.open_by_key(self.SHEET_ID)
         self.sheet = self.workbook.worksheet("RLC-stats")
 

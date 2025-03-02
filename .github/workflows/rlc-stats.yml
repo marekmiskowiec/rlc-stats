@@ -2,7 +2,7 @@ name: RLC Scraper - Test Co Minutę
 
 on:
   schedule:
-    - cron: "0 17/2 * * *"  # CRON dla zimy
+    - cron: "0 11/4 * * *"  # CRON dla zimy
   # cron dla lata
 #      schedule:
   #  - cron: "0 4,8,12,16,20 * * *"
