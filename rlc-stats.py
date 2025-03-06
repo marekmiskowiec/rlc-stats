@@ -35,7 +35,8 @@ class RLCScraper:
             "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-2006-bmw-m3-jcp11",
             "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-71-lamborghini-hwf11",
             "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-1985-audi-sport-quattro-s1-hwf08",
-            "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-1964-dodge-w200-power-wagon-hwf09"
+            "https://creations.mattel.com/en-pl/products/hot-wheels-rlc-1964-dodge-w200-power-wagon-hwf09",
+            "https://creations.mattel.com/en-pl/products/hot-wheels-elite64-porsche-911-gt2-evo-993-hwr94"
         ]
 
         # User-Agent
